@@ -17,16 +17,22 @@ st.set_page_config(
 # --------------------------------------------------
 
 df = pd.read_csv("amazon_reviews.csv")
+st.write(df.columns.tolist())
+st.write(df["RATING"].head(10).tolist())
 
 # --------------------------------------------------
 # CLEAN RATING COLUMN
 # --------------------------------------------------
 
+# Clean column names
+df.columns = df.columns.str.strip().str.upper()
+
+# Clean ratings
 df["RATING"] = (
     df["RATING"]
     .astype(str)
     .str.strip()
-    .str.extract(r"(\d+\.?\d*)")[0]
+    .str.replace("⭐", "", regex=False)
 )
 
 df["RATING"] = pd.to_numeric(df["RATING"], errors="coerce")
