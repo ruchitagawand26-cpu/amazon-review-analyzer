@@ -1,10 +1,9 @@
 import streamlit as st
 import pandas as pd
-import string
 
-# --------------------------------------------------
+# -------------------------------
 # PAGE CONFIGURATION
-# --------------------------------------------------
+# -------------------------------
 
 st.set_page_config(
     page_title="Amazon Review Analyzer",
@@ -12,50 +11,48 @@ st.set_page_config(
     layout="wide"
 )
 
-# --------------------------------------------------
+# -------------------------------
 # LOAD DATASET
-# --------------------------------------------------
+# -------------------------------
 
 df = pd.read_csv("amazon_reviews.csv")
-st.write(df.columns.tolist())
-st.write(df["RATING"].head(10).tolist())
 
-# --------------------------------------------------
-# CLEAN RATING COLUMN
-# --------------------------------------------------
+# Keep only the required columns
+df = df[["SR.NO.", "PRODUCT", "REVIEW", "RATING"]]
 
-# Clean column names
-df.columns = df.columns.str.strip().str.upper()
+# -------------------------------
+# CLEAN RATING
+# -------------------------------
 
-# Clean ratings
-df["RATING"] = (
-    df["RATING"]
-    .astype(str)
-    .str.strip()
-    .str.replace("⭐", "", regex=False)
+df["RATING"] = pd.to_numeric(
+    df["RATING"],
+    errors="coerce"
 )
 
-df["RATING"] = pd.to_numeric(df["RATING"], errors="coerce")
+# Remove rows where rating is missing
+df = df.dropna(subset=["RATING"])
 
-# --------------------------------------------------
+# -------------------------------
 # SENTIMENT ANALYSIS
-# --------------------------------------------------
+# -------------------------------
 
 def get_sentiment(rating):
-    if pd.isna(rating):
-        return "Unknown"
-    elif rating >= 4:
+
+    if rating >= 4:
         return "Positive"
+
     elif rating == 3:
         return "Neutral"
+
     else:
         return "Negative"
 
+
 df["Sentiment"] = df["RATING"].apply(get_sentiment)
 
-# --------------------------------------------------
+# -------------------------------
 # TITLE
-# --------------------------------------------------
+# -------------------------------
 
 st.title("🛒 Amazon Product Review Analyzer")
 
@@ -63,9 +60,9 @@ st.write(
     "Analyze Amazon customer reviews, ratings and sentiments."
 )
 
-# --------------------------------------------------
-# OVERALL DASHBOARD
-# --------------------------------------------------
+# -------------------------------
+# DASHBOARD
+# -------------------------------
 
 st.subheader("📊 Overall Dashboard")
 
@@ -74,21 +71,20 @@ total_reviews = len(df)
 average_rating = df["RATING"].mean()
 
 positive = (df["Sentiment"] == "Positive").sum()
+
 neutral = (df["Sentiment"] == "Neutral").sum()
+
 negative = (df["Sentiment"] == "Negative").sum()
 
-if total_reviews > 0:
-    positive_percent = positive / total_reviews * 100
-    neutral_percent = neutral / total_reviews * 100
-    negative_percent = negative / total_reviews * 100
-else:
-    positive_percent = 0
-    neutral_percent = 0
-    negative_percent = 0
+positive_percent = positive / total_reviews * 100
 
-# --------------------------------------------------
+neutral_percent = neutral / total_reviews * 100
+
+negative_percent = negative / total_reviews * 100
+
+# -------------------------------
 # METRICS
-# --------------------------------------------------
+# -------------------------------
 
 col1, col2, col3, col4 = st.columns(4)
 
@@ -112,9 +108,9 @@ col4.metric(
     f"{negative_percent:.1f}%"
 )
 
-# --------------------------------------------------
+# -------------------------------
 # RATING ANALYSIS
-# --------------------------------------------------
+# -------------------------------
 
 st.subheader("⭐ Rating Analysis")
 
@@ -122,9 +118,9 @@ rating_counts = df["RATING"].value_counts().sort_index()
 
 st.bar_chart(rating_counts)
 
-# --------------------------------------------------
+# -------------------------------
 # SENTIMENT ANALYSIS
-# --------------------------------------------------
+# -------------------------------
 
 st.subheader("😊 Sentiment Analysis")
 
@@ -132,19 +128,19 @@ sentiment_counts = df["Sentiment"].value_counts()
 
 st.bar_chart(sentiment_counts)
 
-# --------------------------------------------------
-# PRODUCT-WISE ANALYSIS
-# --------------------------------------------------
+# -------------------------------
+# PRODUCT ANALYSIS
+# -------------------------------
 
-st.subheader("🛍️ Product-wise Review Analysis")
+st.subheader("🛍️ Product-wise Analysis")
 
 product_counts = df["PRODUCT"].value_counts()
 
 st.bar_chart(product_counts)
 
-# --------------------------------------------------
-# REVIEW DATA
-# --------------------------------------------------
+# -------------------------------
+# CUSTOMER REVIEWS
+# -------------------------------
 
 st.subheader("📝 Customer Reviews")
 
