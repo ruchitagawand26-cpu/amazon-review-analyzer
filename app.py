@@ -3,7 +3,7 @@ import pandas as pd
 import string
 
 # Load analyzed dataset
-df = pd.read_csv("amazon_reviews_analyzed.csv")
+df = pd.read_csv("amazon_reviews.csv")
 
 # Page configuration
 st.set_page_config(
