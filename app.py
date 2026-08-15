@@ -21,7 +21,7 @@ st.write("Analyze Amazon customer reviews, ratings and sentiments.")
 st.subheader("📊 Overall Dashboard")
 
 total_reviews = len(df)
-average_rating = df["Rating"].mean()
+average_rating = df["RATING"].mean()
 
 positive = (df["Sentiment"] == "Positive").sum()
 neutral = (df["Sentiment"] == "Neutral").sum()
@@ -116,10 +116,10 @@ st.subheader("📋 View Product Reviews")
 
 selected_product = st.selectbox(
     "Select a product:",
-    df["Product"].unique()
+    df["PRODUCT"].unique()
 )
 
-product_data = df[df["Product"] == selected_product]
+product_data = df[df["PRODUCT"] == selected_product]
 
 st.dataframe(
     product_data[["Review", "Rating", "Sentiment"]],
