@@ -21,8 +21,7 @@ st.write("Analyze Amazon customer reviews, ratings and sentiments.")
 st.subheader("📊 Overall Dashboard")
 
 total_reviews = len(df)
-df["RATING"]=
-pd.to_numeric(df["RATING"],error="coerce")
+df["RATING"] = pd.to_numeric(df["RATING"],errors="coerce")
 average_rating = df["RATING"].mean()
 
 positive = (df["Sentiment"] == "Positive").sum()
