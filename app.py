@@ -24,9 +24,9 @@ total_reviews = len(df)
 df["RATING"] = pd.to_numeric(df["RATING"],errors="coerce")
 average_rating = df["RATING"].mean()
 
-positive = (df["sentiment"] == "Positive").sum()
-neutral = (df["sentiment"] == "Neutral").sum()
-negative = (df["sentiment"] == "Negative").sum()
+positive = (df["Sentiment"] == "Positive").sum()
+neutral = (df["Sentiment"] == "Neutral").sum()
+negative = (df["Sentiment"] == "Negative").sum()
 
 positive_percent = positive / total_reviews * 100
 neutral_percent = neutral / total_reviews * 100
@@ -41,9 +41,9 @@ col4.metric("Negative", f"{negative_percent:.1f}% 😞")
 
 # ---------------- SENTIMENT CHART ----------------
 
-st.subheader("📈 sentiment Distribution")
+st.subheader("📈 Sentiment Distribution")
 
-sentiment_counts = df["sentiment"].value_counts()
+sentiment_counts = df["Sentiment"].value_counts()
 
 st.bar_chart(sentiment_counts)
 
